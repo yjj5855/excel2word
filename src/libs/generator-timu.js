@@ -8,7 +8,10 @@ import {
   TabStopType,
   TextRun,
   NumberValueElement,
-  Numbering
+  Numbering,
+  Table,
+  TableCell,
+  TableRow
 } from "docx";
 
 export class DocumentCreator {
@@ -33,8 +36,8 @@ export class DocumentCreator {
             },
             paragraph: { // 段落
               spacing: { // 字间距
-                top: 800,
-                bottom: 300
+                before: 300,
+                after: 150
               }
             }
           }
@@ -60,7 +63,7 @@ export class DocumentCreator {
                 level: 1,
                 format: "decimal",
                 text: "%2.",
-                alignment: AlignmentType.START,
+                alignment: AlignmentType.LEFT,
                 style: {
                   paragraph: {
                     indent: {left: 0, hanging: 260}
@@ -139,22 +142,70 @@ export class DocumentCreator {
                   text: `D.${timu['D']}`,
                 }))
               } else {
-                console.log()
                 // 2个选项一排
-                arr.push(new Paragraph({
-                  text: `A.${timu['A']}`,
-                  rightToLeft: 2500
+                arr.push(new Table({
+                  // todo 边框要改为透明
+                  borders: {top: {color: null}, left: 0, bottom: 0, right: 0},
+                  width: {type: 'pct', size: 100},
+                  rows: [
+                    new TableRow({
+                      children: [
+                        new TableCell({
+                          children: [new Paragraph(`A.${timu['A']}`)],
+                        }),
+                        new TableCell({
+                          children: [new Paragraph(`B.${timu['B']}`)],
+                        }),
+                      ],
+                    }),
+                    new TableRow({
+                      children: [
+                        new TableCell({
+                          children: [new Paragraph(`C.${timu['C']}`)],
+                        }),
+                        new TableCell({
+                          children: [new Paragraph(`D.${timu['D']}`)],
+                        }),
+                      ],
+                    })
+                  ]
                 }))
-                arr.push(new Paragraph({
-                  text: `B.${timu['B']}`
-                }))
-                arr.push(new Paragraph({
-                  text: `C.${timu['C']}`,
-                  rightTabStop: 2500
-                }))
-                arr.push(new Paragraph({
-                  text: `D.${timu['D']}`
-                }))
+                // arr.push(new Paragraph({
+                //   bidirectional: true,
+                //   children: [
+                //     new TextRun({
+                //       text: `A.${timu['A']}`,
+                //       rightToLeft: true,
+                //     })
+                //   ]
+                // }))
+                // arr.push(new Paragraph({
+                //   bidirectional: true,
+                //   children: [
+                //     new TextRun({
+                //       text: `B.${timu['B']}`,
+                //       rightToLeft: true,
+                //     })
+                //   ]
+                // }))
+                // arr.push(new Paragraph({
+                //   bidirectional: true,
+                //   children: [
+                //     new TextRun({
+                //       text: `C.${timu['C']}`,
+                //       rightToLeft: true,
+                //     })
+                //   ]
+                // }))
+                // arr.push(new Paragraph({
+                //   bidirectional: true,
+                //   children: [
+                //     new TextRun({
+                //       text: `D.${timu['D']}`,
+                //       rightToLeft: true,
+                //     })
+                //   ]
+                // }))
               }
               console.log(arr)
               return arr
