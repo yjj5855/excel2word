@@ -5,22 +5,27 @@
         accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
         @change="handleFileChange"/>
 
-    <button v-if="sheet" @click="download">下载{{sheet.title}}docx</button>
+    <button v-if="blob" @click="download('docx')">下载{{sheet.title}}.docx</button>
+
+    <button v-if="ppt" @click="download('ppt')">下载{{sheet.title}}.pptx</button>
   </div>
 </template>
 
 <script>
   import * as XLSX from 'xlsx'
-  import {Document, Packer, TextRun} from 'docx'
+  import {Packer} from 'docx'
+  import pptxgen from 'pptxgenjs'
   import xlsx from './libs/xlsx'
   import { DocumentCreator } from './libs/generator-timu'
   import {saveAs} from 'file-saver'
+  import { PptCreator } from './libs/generator-ppt'
 
   export default {
     data () {
       return {
         sheet: null,
-        blob: null
+        blob: null,
+        ppt: null
       }
     },
     watch: {
@@ -30,15 +35,20 @@
         let file = e.target.files && e.target.files[0]
         if (file) {
           this.readExcel(file)
-            .then(this.write2Docx)
-            .then(({blob, sheet}) => {
-              console.log(blob, sheet)
-              this.blob = blob
+            .then((sheet) => {
               this.sheet = sheet
+              Promise.all([
+                this.write2Docx(sheet),
+                this.write2Ppt(sheet)
+              ]).then(([blob, ppt]) => {
+                this.blob = blob
+                this.ppt = ppt
+              }).catch(err => {
+                this.blob = null
+                this.ppt = null
+              })
             })
             .catch((err) => {
-              console.error(err)
-              this.blob = null
               this.sheet = null
             })
         }
@@ -84,10 +94,7 @@
           const doc = documentCreator.create(sheet)
           Packer.toBlob(doc)
             .then((blob) => {
-              resolve({
-                blob,
-                sheet
-              })
+              resolve(blob)
             })
             .catch(err =>{
               console.error(err)
@@ -95,8 +102,24 @@
             })
         })
       },
-      download () {
-        saveAs(this.blob, this.sheet.title + '.docx')
+      write2Ppt (sheet) {
+        return new Promise((resolve, reject) => {
+          const pptCreator = new PptCreator()
+          const ppt = pptCreator.create(sheet)
+          if (ppt) {
+            resolve(ppt)
+          } else {
+            reject()
+          }
+        })
+      },
+      download (fileType = 'all') {
+        if (fileType === 'all' || fileType === 'docx') {
+          saveAs(this.blob, this.sheet.title + '.docx')
+        }
+        if (fileType === 'all' || fileType === 'ppt') {
+          this.ppt.writeFile({ fileName: `${this.sheet.title}.pptx` })
+        }
       }
     }
   }
