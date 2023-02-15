@@ -103,7 +103,7 @@ function addXuanxiang (slide, timu) {
 }
 
 function addJieda (slide, timu) {
-  slide.addText(`${timu['总序']}. 【解析】 ${timu['解析']}`, {
+  slide.addText(`${timu['总序']}. 【解析】 ${timu['调整解析'] || ''}`, {
     ...topRect,
     h: '80%',
     fontSize: 16,

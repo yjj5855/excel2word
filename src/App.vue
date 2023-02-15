@@ -64,13 +64,17 @@
                 title: '',
                 timuList: []
               }
+              console.log(wb.Sheets[sheetName])
               let xlsxData = XLSX.utils.sheet_to_json(wb.Sheets[sheetName])
               let allKeyList = xlsx.getHeaderKeyList(wb.Sheets[sheetName])
               xlsxData.forEach((data, index)=> {
                 if (index >= 1) {
-                  if (typeof data['总序'] === 'string') {
+                  if (typeof data['总序'] === 'string' && data['总序'].length > 10) {
 
                   } else {
+                    if (typeof data['总序'] === 'string') {
+                      data['总序'] = Number(data['总序'].replace(/\s+/g,''))
+                    }
                     sheet.timuList.push(data)
                   }
                 } else if (index === 0) {

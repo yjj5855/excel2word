@@ -19,10 +19,10 @@ import {
 export class DocumentCreator {
   create(sheet) {
     let timuList = sheet.timuList.sort((a, b) => a['总序'] < b['总序'])
-
+    console.log(sheet.timuList)
     let danxuanList = timuList.filter(item => item['题型'] === '单选')
     let duoxuanList = timuList.filter(item => item['题型'] === '多选')
-
+    // console.log(danxuanList, duoxuanList)
     const document = new Document({
       styles: {
         paragraphStyles: [ // 段落样式
@@ -372,7 +372,7 @@ function getJiexiElement(timu, danOrDuo = 'dan') {
   })
   arr.push(p)
   const jiexi = new Paragraph({
-    text: `【解析】 ${timu['解析']}`,
+    text: `【解析】 ${timu['调整解析'] || ''}`,
     heading: 'daan'
   })
   arr.push(jiexi)
