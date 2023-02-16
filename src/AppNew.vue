@@ -169,7 +169,10 @@
           })
         }
         if (fileType === 'all' || fileType === 'ppt') {
-          this.ppt.writeFile({ fileName: `${this.sheet.title}.pptx` })
+          this.write2Ppt(this.sheet).then(ppt => {
+            this.ppt = ppt
+            this.ppt.writeFile({ fileName: `${this.sheet.title}.pptx` })
+          })
         }
       }
     }

@@ -1,7 +1,14 @@
 import pptxgen from 'pptxgenjs'
 
-const topRect = {x: '10%', y: '5%', w: '80%', h: '30%'}
+const topRect = {x: '10%', y: '10%', w: '80%', h: '30%'}
+// 1 = 160px
+const ipx = 160
+const logoRect = {x: '2%', y: 0, w: 261/ipx, h: 87/ipx}
 
+const backgroundColor = 'ffffff'
+const textColor = '333333'
+const textFontSize = 14
+const daanColor = 'ff0000'
 export class PptCreator {
   create (sheet) {
     let timuList = sheet.timuList.sort((a, b) => a['总序'] < b['总序'])
@@ -12,16 +19,41 @@ export class PptCreator {
 
     const ppt = new pptxgen()
     ppt.layout = 'LAYOUT_16x9'
-    ppt.author = '作者';
-    ppt.company = '公司';
+    ppt.author = '上海建工';
+    ppt.company = '上海建工';
     ppt.revision = '1';
     ppt.subject = sheet.title
     ppt.title = sheet.sheetName
+
     ppt.defineSlideMaster({
       title: 'MASTER_SLIDE',
-      background: { fill: '1f1d90' },
-      // objects
-      // // slideNumber: { x: 6.5, y: 12, fontSize: 10 }
+      background: { fill: backgroundColor },
+      // 配置全局样式
+      objects: [
+        {
+          image: {
+            ...logoRect,
+            path: '/logo-jiangong.png',
+            sizing: {
+              type: 'cover'
+            }
+          }
+        }
+        // {
+        //   text: {
+        //     text: 'ajsjf',
+        //     options: {
+        //       ...topRect,
+        //       fontSize: textFontSize,
+        //       valign: 'top',
+        //       align: 'right',
+        //       fontFace: '微软雅黑',
+        //       color: textColor
+        //     }
+        //   }
+        // }
+      ]
+      // slideNumber: { x: 6.5, y: 12, fontSize: 10 }
     })
 
     danxuanList.map(timu => {
@@ -51,14 +83,13 @@ export class PptCreator {
 }
 
 function addTimu (slide, timu) {
-  let fontSize = 16
   slide.addText(`${timu['总序']}. ${timu['题目']}`, {
     ...topRect,
-    fontSize: fontSize,
+    fontSize: textFontSize,
     valign: 'top',
     align: 'left',
     fontFace: '微软雅黑',
-    color: 'ffffff'
+    color: textColor
   })
   return slide
 }
@@ -85,8 +116,8 @@ function addXuanxiang (slide, timu) {
     ...bottomRect,
     // rowH: 0.31, // 单元格默认高度
     valign: 'middle',
-    fontSize: 16,
-    color: 'ffffff',
+    fontSize: textFontSize,
+    color: textColor,
     // align: 'center',
     // colW: ['100%']  // 表格每一列宽度
   })
@@ -94,10 +125,10 @@ function addXuanxiang (slide, timu) {
   slide.addText(`【答案】 ${timu['答案']}`, {
     ...bottomRect,
     y: '80%', h: '15%',
-    fontSize: 16,
+    fontSize: textFontSize,
     align: 'left',
     fontFace: '微软雅黑',
-    color: 'ff0000'
+    color: daanColor
   })
   return slide
 }
@@ -106,11 +137,11 @@ function addJieda (slide, timu) {
   slide.addText(`${timu['总序']}. 【解析】 ${timu['调整解析'] || ''}`, {
     ...topRect,
     h: '80%',
-    fontSize: 16,
+    fontSize: textFontSize,
     valign: 'top',
     align: 'left',
     fontFace: '微软雅黑',
-    color: 'ffffff'
+    color: textColor
   })
   return slide
 }
