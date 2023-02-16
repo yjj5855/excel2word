@@ -13,7 +13,8 @@ import {
   WidthType,
   Table,
   TableCell,
-  TableRow, BorderStyle, Columns, Column
+  TableRow, BorderStyle, Columns, Column,
+  ImageRun
 } from "docx";
 
 export class DocumentCreator {
@@ -211,6 +212,23 @@ function getTimuElement(timu, danOrDuo = 'dan') {
   })
   arr.push(p)
 
+  // 添加题目图片
+  if (timu['题目_image']) {
+    // console.log(timu['题目_image'])
+    const imageRun = new Paragraph({
+      children: [
+        new ImageRun({
+          data: timu['题目_image'].buffer,
+          transformation: {
+            width: timu['题目_image'].width || 150,
+            height: timu['题目_image'].height || 150
+          }
+        })
+      ]
+    })
+    arr.push(imageRun)
+  }
+
   // 添加选项
   let xuanxiangMax = Math.max(...[
     timu['A'] && String(timu['A']).length || 0,
@@ -376,5 +394,22 @@ function getJiexiElement(timu, danOrDuo = 'dan') {
     heading: 'daan'
   })
   arr.push(jiexi)
+
+  // 添加题目图片
+  if (timu['解析_image']) {
+    // console.log(timu['题目_image'])
+    const imageRun = new Paragraph({
+      children: [
+        new ImageRun({
+          data: timu['解析_image'].buffer,
+          transformation: {
+            width: timu['解析_image'].width || 150,
+            height: timu['解析_image'].height || 150
+          }
+        })
+      ]
+    })
+    arr.push(imageRun)
+  }
   return arr
 }
