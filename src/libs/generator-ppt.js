@@ -33,7 +33,7 @@ export class PptCreator {
         {
           image: {
             ...logoRect,
-            path: '/logo-jiangong.png',
+            path: 'https://yjj5855.github.io/excel2word/dist/logo-jiangong.png',
             sizing: {
               type: 'cover'
             }
