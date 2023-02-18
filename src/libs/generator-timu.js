@@ -17,6 +17,26 @@ import {
   ImageRun
 } from "docx";
 
+/**
+ *
+ 八号	5
+ 七号	5.5
+ 小六	6.5
+ 六号	7.5
+ 小五	9
+ 五号	10.5
+ 小四	12
+ 四号	14
+ 小三	15
+ 三号	16
+ 小二	18
+ 二号	22
+ 小一	24
+ 一号	26
+ 小初	36
+ 初号	42
+ */
+
 export class DocumentCreator {
   create(sheet) {
     let timuList = sheet.timuList.sort((a, b) => a['总序'] < b['总序'])
@@ -28,11 +48,26 @@ export class DocumentCreator {
       styles: {
         paragraphStyles: [ // 段落样式
           {
+            id: "title",
+            name: "title",
+            run: {
+              size: 22 * 2,
+              color: "#000000",
+              bold: true
+            },
+            paragraph: { // 段落
+              spacing: { // 字间距
+                after: 500
+              }
+            }
+          },
+          {
             id: "subtitle",
             name: "subtitle",
             run: {
-              size: 36,
-              color: "#000000"
+              size: 16 * 2,
+              color: "#000000",
+              bold: true
             },
             paragraph: { // 段落
               spacing: { // 字间距
@@ -45,7 +80,7 @@ export class DocumentCreator {
             id: "timu",
             name: "timu",
             run: {
-              size: 24,
+              size: 12 * 2,
               color: "#000000"
             },
             paragraph: { // 段落
@@ -59,12 +94,8 @@ export class DocumentCreator {
             id: "daan",
             name: "daan",
             run: {
-              size: 24,
-              color: "#000000",
-              // margin: {
-              //   top: 800,
-              //   bottom: 300
-              // }
+              size: 12 * 2,
+              color: "#000000"
             },
             paragraph: { // 段落
               spacing: { // 字间距
@@ -116,12 +147,13 @@ export class DocumentCreator {
           children: [
             new Paragraph({
               text: sheet.title,
-              heading: HeadingLevel.TITLE,
+              heading: 'title',
               alignment: 'center'
             }),
             new Paragraph({
               text: '单项选择题',
               heading: 'subtitle',
+              bold: true,
               alignment: 'center'
             }),
             ...danxuanList.map((timu, index) => {
@@ -130,6 +162,7 @@ export class DocumentCreator {
             new Paragraph({
               text: '多项选择题',
               heading: 'subtitle',
+              bold: true,
               alignment: 'center'
             }),
             ...duoxuanList.map((timu, index) => {
@@ -138,53 +171,39 @@ export class DocumentCreator {
             new Paragraph({
               text: '参考答案',
               heading: 'subtitle',
+              bold: true,
               alignment: 'center'
             }),
             new Paragraph({
-              children: [
-                new TextRun({
-                  text: '一 单项选择题',
-                  bold: true,
-                  heading: 'timu'
-                })
-              ]
+              text: '一 单项选择题',
+              bold: true,
+              heading: 'timu',
             }),
             ...getDaanElement(danxuanList),
             new Paragraph({
-              children: [
-                new TextRun({
-                  text: '二 多项选择题',
-                  bold: true,
-                  heading: 'timu'
-                })
-              ]
+              text: '二 多项选择题',
+              bold: true,
+              heading: 'timu',
             }),
             ...getDaanElement(duoxuanList, 'duo'),
             new Paragraph({
               text: '答案解析',
               heading: 'subtitle',
+              bold: true,
               alignment: 'center'
             }),
             new Paragraph({
-              children: [
-                new TextRun({
-                  text: '一 单项选择题',
-                  bold: true,
-                  heading: 'timu'
-                })
-              ]
+              text: '一 单项选择题',
+              heading: 'timu',
+              bold: true
             }),
             ...danxuanList.map((timu, index) => {
               return getJiexiElement(timu)
             }).reduce((prev, curr) => prev.concat(curr), []),
             new Paragraph({
-              children: [
-                new TextRun({
-                  text: '二 多项选择题',
-                  bold: true,
-                  heading: 'timu'
-                })
-              ]
+              text: '二 多项选择题',
+              bold: true,
+              heading: 'timu'
             }),
             ...duoxuanList.map((timu, index) => {
               return getJiexiElement(timu, 'duo')
@@ -358,6 +377,7 @@ function getDaanElement(list, danOrDuo = 'dan') {
       children: [
         new Paragraph({
           text: `${item['总序'] <= 9 ? '  ': ''}${item['总序']}. ${item['答案']}`,
+          heading: 'timu'
         }),
       ]
     }), index % count)
