@@ -91,6 +91,19 @@ function addTimu (slide, timu) {
     fontFace: '微软雅黑',
     color: textColor
   })
+
+  // 添加题目图片
+  if (timu['题目_image']) {
+    let image = timu['题目_image']
+    console.log(image)
+    slide.addImage({
+      x: topRect.x, y: '20%', w: image.width/ipx*2, h: image.height/ipx*2,
+      path: image.url,
+      sizing: {
+        type: 'cover'
+      }
+    })
+  }
   return slide
 }
 
@@ -143,5 +156,16 @@ function addJieda (slide, timu) {
     fontFace: '微软雅黑',
     color: textColor
   })
+  // 添加题目图片
+  if (timu['解析_image']) {
+    let image = timu['解析_image']
+    slide.addImage({
+      x: topRect.x, y: '20%', w: image.width/ipx*2, h: image.height/ipx*2,
+      path: image.url,
+      sizing: {
+        type: 'cover'
+      }
+    })
+  }
   return slide
 }
